@@ -1,0 +1,10 @@
+MC1BUS,mc1Voltage,mc1Current,float,float
+MC1VEL,mc1Velocityrpm,mc1Velocityms,float,float
+MC2BUS,mc2Voltage,mc2Current,float,float
+MC2VEL,mc2Velocityrpm,mc2Velocityms,float,float
+BP_ISH,bpsVoltage,bpsCurrent,float,float
+BP_VMX,bpsMaxVoltageCell,bpsMaxVoltageValue,float,float
+BP_VMN,bpsMinVoltageCell,bpsMinVoltageValue,float,float
+BP_TMX,bpsMaxTempCell,bpsMaxTempValue,float,float
+DC_DRV,dcMotorVelocitySetpoint,dcMotorCurrentSetpoint,float,float
+DC_SWC,dcSwitchStateChange,dcSwitchPosition,boolean,boolean

@@ -1,0 +1,379 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Telemetry</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap.css">
+</head>
+
+<body>
+    <div id="error"></div>
+    <div class="actions">
+        <select class="form-control" id="ports"  onchange="setCom(this.value)"></select>
+        <button class="btn btn-primary" onclick="config()">Config</button>
+        <select class="form-control" id="logOptions"></select>
+        <button class="btn btn-primary" onclick="telemetry.openLog()">Show Log</button>
+        <button class="btn btn-primary" onclick="telemetry.downloadCSV()">Download CSV</button>
+        <button class="btn btn-primary" onclick="telemetry.snapshot()">Take Snapshot</button>
+    </div>
+    <div id="output">
+        <div class="hf">
+            <span id="timer" class="sevensegment"></span>
+            <span id="connection" class="connection"></span>
+            <div class="row">
+                <div class="motors">
+                    <table class="mc1">
+                        <caption>Motor Controller 1</caption>
+                        <tr>
+                            <td>
+                                <canvas id="mc1Current" data-type="radial-gauge" data-width="200" data-height="200" data-units="Amps" data-min-value="0"
+                                    data-start-angle="90" data-ticks-angle="180" data-value-box="true" data-max-value="80" data-major-ticks="0,20,40,60,80"
+                                    data-minor-ticks="2" data-stroke-ticks="true" data-highlights='[]' data-color-plate="#fcc30f"
+                                    data-border-shadow-width="0" data-borders="false" data-needle-type="arrow" data-needle-width="2"
+                                    data-needle-circle-size="7" data-needle-circle-outer="true" data-needle-circle-inner="false"
+                                    data-animation-duration="500" data-animation-rule="linear"></canvas>
+                            </td>
+                            <td>
+                                <canvas id="mc1Voltage" data-type="radial-gauge" data-width="200" data-height="200" data-units="Volts" data-min-value="0"
+                                    data-start-angle="90" data-ticks-angle="180" data-value-box="true" data-max-value="150" data-major-ticks="0,30,60,90,120,150"
+                                    data-minor-ticks="3" data-stroke-ticks="true" data-highlights='[]' data-color-plate="#fcc30f"
+                                    data-border-shadow-width="0" data-borders="false" data-needle-type="arrow" data-needle-width="2"
+                                    data-needle-circle-size="7" data-needle-circle-outer="true" data-needle-circle-inner="false"
+                                    data-animation-duration="500" data-animation-rule="linear"></canvas>
+                            </td>
+                            <td>
+                                <canvas id="mc1Velocityms" data-type="radial-gauge" data-width="200" data-height="200" data-units="(mi/h)" data-min-value="0"
+                                    data-start-angle="45" data-ticks-angle="270" data-value-box="true" data-max-value="80" data-major-ticks="0,10,20,30,40,50,60,70,80"
+                                    data-minor-ticks="10" data-stroke-ticks="true" data-highlights='[]' data-color-plate="#fff"
+                                    data-border-shadow-width="0" data-borders="false" data-needle-type="arrow" data-needle-width="2"
+                                    data-needle-circle-size="7" data-needle-circle-outer="true" data-needle-circle-inner="false"
+                                    data-animation-duration="500" data-animation-rule="linear"></canvas>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="mc2">
+                        <caption>Motor Controller 2</caption>
+                        <tr>
+                            <td>
+                                <canvas id="mc2Current" data-type="radial-gauge" data-width="200" data-height="200" data-units="Amps" data-min-value="0"
+                                    data-start-angle="90" data-ticks-angle="180" data-value-box="true" data-max-value="80" data-major-ticks="0,20,40,60,80"
+                                    data-minor-ticks="2" data-stroke-ticks="true" data-highlights='[]' data-color-plate="#fcc30f"
+                                    data-border-shadow-width="0" data-borders="false" data-needle-type="arrow" data-needle-width="2"
+                                    data-needle-circle-size="7" data-needle-circle-outer="true" data-needle-circle-inner="false"
+                                    data-animation-duration="500" data-animation-rule="linear"></canvas>
+                            </td>
+                            <td>
+                                <canvas id="mc2Voltage" data-type="radial-gauge" data-width="200" data-height="200" data-units="Volts" data-min-value="0"
+                                    data-start-angle="90" data-ticks-angle="180" data-value-box="true" data-max-value="150" data-major-ticks="0,30,60,90,120,150"
+                                    data-minor-ticks="3" data-stroke-ticks="true" data-highlights='[]' data-color-plate="#fcc30f"
+                                    data-border-shadow-width="0" data-borders="false" data-needle-type="arrow" data-needle-width="2"
+                                    data-needle-circle-size="7" data-needle-circle-outer="true" data-needle-circle-inner="false"
+                                    data-animation-duration="500" data-animation-rule="linear"></canvas>
+                            </td>
+                            <td>
+                                <canvas id="mc2Velocityms" data-type="radial-gauge" data-width="200" data-height="200" data-units="(mi/h)" data-min-value="0"
+                                    data-start-angle="45" data-ticks-angle="270" data-value-box="true" data-max-value="80" data-major-ticks="0,10,20,30,40,50,60,70,80"
+                                    data-minor-ticks="10" data-stroke-ticks="true" data-highlights='[]' data-color-plate="#fff"
+                                    data-border-shadow-width="0" data-borders="false" data-needle-type="arrow" data-needle-width="2"
+                                    data-needle-circle-size="7" data-needle-circle-outer="true" data-needle-circle-inner="false"
+                                    data-animation-duration="500" data-animation-rule="linear"></canvas>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="snapshot">
+                        <caption>Snapshot</caption>
+                        <tr>
+                            <th></th>
+                            <th>Time</th>
+                            <th>AmpHour</th>
+                            <th>WattHour</th>
+                        </tr>
+                        <tr>
+                            <td>Diff</td>
+                            <td>
+                                <span id="lapTime"></span>
+                            </td>
+                            <td>
+                                <span id="amphourDiff"></span>
+                            </td>
+                            <td>
+                                <span id="watthourDiff"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Current</td>
+                            <td>
+                                <span id="time"></span>
+                            </td>
+                            <td>
+                                <span id="amphour"></span>
+                            </td>
+                            <td>
+                                <span id="watthour"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="row">
+                    <table class="battery">
+                        <caption>Battery</caption>
+                        <tr>
+                            <td colspan="3" class="padding">
+                                <canvas id="bpsCurrent" data-type="radial-gauge" data-width="200" data-height="200" data-units="Amps" data-min-value="-20"
+                                    data-start-angle="45" data-ticks-angle="270" data-value-box="true" data-max-value="80" data-major-ticks="-20,-10,0,10,20,30,40,50,60,70,80"
+                                    data-minor-ticks="10" data-stroke-ticks="true" data-highlights='[]' data-color-plate="#fff" data-border-shadow-width="0"
+                                    data-borders="false" data-needle-type="arrow" data-needle-width="2" data-needle-circle-size="7"
+                                    data-needle-circle-outer="true" data-needle-circle-inner="false" data-animation-duration="500"
+                                    data-animation-rule="linear"></canvas>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="padding">
+                                <canvas id="bpsSOC"
+                                    data-type="linear-gauge"
+                                    data-width="300"
+                                    data-height="100"
+                                    data-min-value="0"
+                                    data-max-value="100"
+                                    data-major-ticks="0,10,20,30,40,50,60,70,80,90,100"
+                                    data-minor-ticks="5"
+                                    data-value-box="true"
+                                    data-stroke-ticks="true"
+                                    data-highlights='[ {"from": 0, "to": 20, "color": "rgba(200, 0, 0, .5)"} ]'
+                                    data-color-plate="#fff"
+                                    data-border-shadow-width="0"
+                                    data-borders="false"
+                                    data-needle-type="arrow"
+                                    data-needle-width="2"
+                                    data-needle-circle-size="7"
+                                    data-tick-side="left"
+                                    data-number-side="left"
+                                    data-needle-side="left"
+                                    data-animation-duration="500"
+                                    data-animation-rule="linear"
+                                    data-bar-begin-circle="false"
+                                    data-bar-width="5"
+                                ></canvas>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Power:
+                            </td>
+                            <td><span id="bpsCoulomb"></span> Ah</td>
+                            <td><span id="bpsWatts"></span> Wh</td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th class="padding">Cell</th>
+                            <th class="padding">Value</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                Max Voltage
+                            </td>
+                            <td class="padding">
+                                <span id="bpsMaxVoltageCell"></span>
+                            </td>
+                            <td class="padding">
+                                <span id="bpsMaxVoltageValue"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Min Voltage
+                            </td>
+                            <td class="padding">
+                                <span id="bpsMinVoltageCell"></span>
+                            </td>
+                            <td class="padding">
+                                <span id="bpsMinVoltageValue"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Max Temp
+                            </td>
+                            <td class="padding">
+                                <span id="bpsMaxTempCell"></span>
+                            </td>
+                            <td class="padding">
+                                <span id="bpsMaxTempValue"></span>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="arrayController">
+                        <caption>Array Controller</caption>
+                        <tr>
+                            <td colspan="3" class="padding">
+                                <canvas id="acCurrent" data-type="radial-gauge" data-width="200" data-height="200" data-units="Amps" data-min-value="0"
+                                    data-start-angle="90" data-ticks-angle="180" data-value-box="true" data-max-value="10" data-major-ticks="0,2,4,6,8,10"
+                                    data-minor-ticks="1" data-stroke-ticks="true" data-highlights='[]' data-color-plate="#fcc30f" data-border-shadow-width="0"
+                                    data-borders="false" data-needle-type="arrow" data-needle-width="2" data-needle-circle-size="7"
+                                    data-needle-circle-outer="true" data-needle-circle-inner="false" data-animation-duration="500"
+                                    data-animation-rule="linear"></canvas>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="padding">
+                                <canvas id="acVoltage" data-type="radial-gauge" data-width="200" data-height="200" data-units="Volts" data-min-value="0"
+                                    data-start-angle="90" data-ticks-angle="180" data-value-box="true" data-max-value="150" data-major-ticks="0,30,60,90,120,150"
+                                    data-minor-ticks="3" data-stroke-ticks="true" data-highlights='[]' data-color-plate="#fcc30f"
+                                    data-border-shadow-width="0" data-borders="false" data-needle-type="arrow" data-needle-width="2"
+                                    data-needle-circle-size="7" data-needle-circle-outer="true" data-needle-circle-inner="false"
+                                    data-animation-duration="500" data-animation-rule="linear"></canvas>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th class="padding">Voltage</th>
+                            <th class="padding">Current</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                MPPT 1
+                            </td>
+                            <td class="padding">
+                                <span id="acM1Voltage"></span>
+                            </td>
+                            <td class="padding">
+                                <span id="acM1Current"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                MPPT 2
+                            </td>
+                            <td class="padding">
+                                <span id="acM2Voltage"></span>
+                            </td>
+                            <td class="padding">
+                                <span id="acM2Current"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                MPPT 3
+                            </td>
+                            <td class="padding">
+                                <span id="acM3Voltage"></span>
+                            </td>
+                            <td class="padding">
+                                <span id="acM3Current"></span>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="dc" id="driverController">
+                        <caption>Driver Controller</caption>
+                        <tr>
+                            <td>Setpoint</td>
+                            <td class="padding">
+                                <span id="dcMotorCurrentSetpoint"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    const serialport = require('serialport');
+    const ByteBuffer = require('bytebuffer');
+    const RadialGauge = require('canvas-gauges');
+    const telemetry = require('./telemetry.js');
+
+    var logCount = 1;
+    var previousTime = '';
+
+    var com = '';
+    var output = '';
+    var connectedPort = '';
+
+    telemetry.fillLogOptions();
+
+    function setCom(com) {
+
+        var ports = document.getElementById('ports');
+        var success = document.createElement('span');
+        success.innerHTML = "Successful Connection";
+        ports.parentNode.insertBefore(success, ports);
+        ports.parentNode.removeChild(ports);
+
+
+        var port = new serialport(com, { baudRate: 9600 }, function (err) {
+            if (err) {
+                return console.log('Error: ', err.message);
+            }
+        });
+        connectedPort = port;
+        
+        port.on('data', function (data) {
+            if (data) {
+                data.forEach(d => {
+                    if (d == 10) {
+                        telemetry.readLine(output);
+                        output = '';
+                    }
+                    else {
+                        output += String.fromCharCode(d);
+                    }
+                })
+            }
+        });
+
+    }
+
+    // get all serial ports and display them as buttons on to of screen
+    serialport.list((err, ports) => {
+        if (err) {
+            document.getElementById('error').textContent = err.message
+            return
+        } else {
+            document.getElementById('error').textContent = ''
+        }
+
+        if (ports.length === 0) {
+            document.getElementById('error').textContent = 'No ports discovered'
+        }
+
+        var portList = '';
+        portList += makeOption('');
+        ports.forEach(port => {
+            portList += makeOption(port.comName);
+        });
+
+        document.getElementById('ports').innerHTML = portList;
+
+    });
+
+    // make html button for com ports
+    function makeOption(text) {
+        return '<option>' + text + '</option>';
+    }
+
+    function config() {
+        connectedPort.write('+++', function (err) {
+            if (err) {
+                return console.log('Error on write: ', err.message);
+            }
+            window.setTimeout(() => {
+                connectedPort.write('ATAM, MY 786, DT 786', function (err) {
+                    if (err) {
+                        console.log('Error on write:', err);
+                    }
+                    connectedPort.write('ATCN\r', function (err) {
+                        
+                    });
+                });
+            }, 1000);
+        });
+    }
+
+
+</script>
+
+</html>

@@ -1,0 +1,159 @@
+@font-face { font-family: SevenSegment; src: url('7Segment.otf'); } 
+
+.center {
+    display: flex;
+    justify-content: center;
+}
+
+.btn {
+    margin: 10px;
+}
+
+.hf,
+.lf {
+    background-color: #fcc30f;
+    border-radius: 10px;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 20px;
+    max-height: 1000px;
+}
+
+.battery {
+    min-width: 320px;
+}
+
+.dc {
+    min-width: 200px;
+}
+
+.quarter,
+.once,
+.hf {
+    flex-direction: column;
+    align-items: center;
+}
+
+.motors,
+.hf,
+.lf,
+.quarter,
+.once {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.motors {
+    flex-direction: column;
+}
+
+.row{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.column{
+    display: flex;
+    flex-direction: column;
+}
+
+caption {
+    background-color: 	#442416;
+    color: white !important;
+    text-align: center !important;
+}
+
+table {
+    border: 5px solid #442416;
+    margin: 20px;
+}
+
+td {
+    padding: 10px !important;
+}
+
+.padding {
+    padding: 20px !important;
+    text-align: center;
+}
+
+.switch {
+    padding: 5px !important;
+    text-align: center;
+}
+
+.virticle-line {
+    height: inherit;
+    width: 4px;
+    background-color: black;
+    margin: 10px;
+    border-radius: 2px;
+}
+
+.toggle{
+    display: flex;
+}
+
+.labels{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggle-element{
+    border: 1px solid black;
+    border-radius: 10px;
+    height: 50px;
+    width: 20px;
+    background-color: white;
+    margin: 10px;
+}
+
+.toggle-ball{
+    height: 16px;
+    width: 16px;
+    position: relative;
+    background-color: brown;
+    border-radius: 50%;
+    margin: 1px;
+}
+
+.top{
+    top: 0;
+}
+
+.bottom{
+    top: 30px;
+}
+
+.sevensegment{
+    font-family: SevenSegment;
+    font-size: 20pt;
+}
+
+.form-control {
+    max-width: 200px;
+    margin: 15px;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 50px;
+}
+
+.btn {
+    margin-top: 0;
+}
+
+.connection {
+    font-size: 20pt;
+}
+
+.snapshot {
+    width: 90%;
+}
